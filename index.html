@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Longevity Fitness Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 700px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #5c67f2;
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+        input, select {
+            /* width: 100%; */
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="range"] {
+            width: 100%;
+        }
+        .checkbox-group {
+            margin-top: 10px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #5c67f2;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #4a54e1;
+        }
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9f7fa;
+            border: 1px solid #bce4e6;
+            border-radius: 4px;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #5c67f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Longevity Fitness Calculator</h1>
+        <label>Current Age:</label>
+        <input type="range" id="age" min="20" max="100" value="30" oninput="updateValue('ageValue', this.value)">
+        <span id="ageValue" class="highlight">30</span>
+
+        <label>Sex:</label>
+        <select id="sex">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+
+        <label>Current VO2 Max Score:</label>
+        <input type="number" id="vo2max" min="0" max="60" step="0.1" value="40">
+
+        <label>Activity Level:</label>
+        <select id="activityLevel">
+            <option value="sedentary">Sedentary</option>
+            <option value="active">Active</option>
+            <option value="trained">Trained</option>
+        </select>
+
+        <label>Years to Project:</label>
+        <input type="range" id="years" min="1" max="50" value="10" oninput="updateValue('yearsValue', this.value)">
+        <span id="yearsValue" class="highlight">10</span>
+
+        <label>Daily Activities:</label>
+        <div class="checkbox-group">
+            <label><input type="checkbox" value="42"> Carrying heavy objects upstairs</label>
+            <label><input type="checkbox" value="35"> Jog on flat ground</label>
+            <label><input type="checkbox" value="32"> Briskly climb stairs</label>
+            <label><input type="checkbox" value="25"> Walk up steep hill (10% incline)</label>
+            <label><input type="checkbox" value="18"> Walk up steep hill (5% incline)</label>
+            <label><input type="checkbox" value="11"> Walking 3 mph on flat ground</label>
+            <label><input type="checkbox" value="6"> Walk 1 mph on flat ground</label>
+            <label><input type="checkbox" value="3.5"> Sleeping and staying alive</label>
+        </div>
+
+        <button onclick="calculateResults()">Calculate</button>
+
+        <div class="output">
+            <p id="currentRanking"></p>
+            <p id="projectedVO2"></p>
+            <p id="dailyImpact"></p>
+            <p id="projectedRanking"></p>
+        </div>
+    </div>
+
+    <script>
+        function updateValue(id, value) {
+            document.getElementById(id).textContent = value;
+        }
+
+        function getDeclineRate(age, sex, activityLevel) {
+            if (age >= 91) return 3 / 100;
+            if (age >= 81) return 2.5 / 100;
+            if (age >= 71) return 2 / 100;
+            
+            const declineRates = {
+                male: { sedentary: 0.40, active: 0.39, trained: 0.46 },
+                female: { sedentary: 0.35, active: 0.44, trained: 0.62 }
+            };
+            return declineRates[sex][activityLevel];
+        }
+
+        function calculateResults() {
+            const age = parseInt(document.getElementById("age").value);
+            const sex = document.getElementById("sex").value;
+            const vo2max = parseFloat(document.getElementById("vo2max").value);
+            const years = parseInt(document.getElementById("years").value);
+            const activityLevel = document.getElementById("activityLevel").value;
+
+            const declineRate = getDeclineRate(age, sex, activityLevel);
+            const projectedVO2Max = age >= 71 ? vo2max * Math.pow(1 - declineRate, years) : vo2max - (declineRate * years);
+
+            let dailyImpact = "";
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(activity => {
+                const activityVO2 = parseFloat(activity.value);
+                const percentage = (activityVO2 / projectedVO2Max) * 100;
+                const category = getFeelingCategory(percentage);
+                dailyImpact += `<b>${activity.parentNode.textContent.trim()}:</b> ${percentage.toFixed(1)}% of VO2 Max (${category})<br>`;
+            });
+            function getRanking(sex, age, vo2max) {
+                const vo2MaxNorms = {
+                    male: [
+                        { ageRange: [18, 25], ranges: [60, 52, 47, 42, 37, 30] },
+                        { ageRange: [26, 35], ranges: [56, 49, 43, 40, 35, 30] },
+                        { ageRange: [36, 45], ranges: [51, 43, 39, 35, 31, 26] },
+                        { ageRange: [46, 55], ranges: [45, 39, 36, 32, 29, 25] },
+                        { ageRange: [56, 65], ranges: [41, 36, 32, 30, 26, 22] },
+                        { ageRange: [65, 100], ranges: [37, 33, 29, 26, 22, 20] }
+                    ],
+                    female: [
+                        { ageRange: [18, 25], ranges: [56, 47, 42, 38, 33, 28] },
+                        { ageRange: [26, 35], ranges: [52, 45, 39, 35, 31, 26] },
+                        { ageRange: [36, 45], ranges: [45, 38, 34, 31, 27, 22] },
+                        { ageRange: [46, 55], ranges: [40, 34, 31, 28, 25, 20] },
+                        { ageRange: [56, 65], ranges: [37, 32, 28, 25, 22, 18] },
+                        { ageRange: [65, 100], ranges: [32, 28, 25, 22, 19, 17] }
+                    ]
+                };
+            
+                const ratings = ["Exceptional", "Excellent", "Good", "Above Average", "Below Average", "Poor", "Very Poor"];
+            
+                // 1. Find the correct age group
+                const norms = vo2MaxNorms[sex];
+                const ageGroup = norms.find(group => age >= group.ageRange[0] && age <= group.ageRange[1]);
+            
+                if (!ageGroup) return "Invalid Age";
+            
+                // 2. Compare VO2 Max value with thresholds for the selected age group
+                for (let i = 0; i < ageGroup.ranges.length; i++) {
+                    if (vo2max >= ageGroup.ranges[i]) {
+                        return ratings[i];
+                    }
+                }
+            
+                return ratings[ratings.length - 1]; // Return "Very Poor" if no range matches
+            }
+
+
+            const currentRank = getRanking(sex, age, vo2max);
+            const projectedRank = getRanking(sex, age + years, projectedVO2Max);
+
+            document.getElementById("projectedVO2").innerHTML = `Projected VO2 Max after ${years} years: <span class="highlight">${projectedVO2Max.toFixed(2)}</span>`;
+            document.getElementById("dailyImpact").innerHTML = dailyImpact || "No activities selected.";
+            
+            document.getElementById("currentRanking").innerHTML = `Current Ranking: <span class="highlight">${currentRank}</span>`;
+            document.getElementById("projectedRanking").innerHTML = `Projected Ranking: <span class="highlight">${projectedRank}</span>`;
+            // document.getElementById("dailyImpact").innerHTML = "Impact on Daily Activities: Calculations coming soon!";
+        }
+
+        function getFeelingCategory(percentage) {
+            if (percentage < 30) return " So relaxed, floating on a cloud!";
+            if (percentage < 40) return "It’s a breeze.";
+            if (percentage < 50) return "Cruising Along";
+            if (percentage < 60) return "In the groove, still chatting";
+            if (percentage < 75) return "Feeling the burn, struggling to chat!";
+            if (percentage < 90) return "Panting like a steam engine, muscles are on fire.";
+            return "Heart & lungs begging for mercy.";
+        }
+    </script>
+</body>
+</html>
