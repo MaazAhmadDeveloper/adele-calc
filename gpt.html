@@ -30,7 +30,6 @@
             display: block;
         }
         input, select {
-            /* width: 100%; */
             padding: 8px;
             margin-top: 5px;
             border: 1px solid #ccc;
@@ -41,19 +40,6 @@
         }
         .checkbox-group {
             margin-top: 10px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background: #5c67f2;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #4a54e1;
         }
         .output {
             margin-top: 20px;
@@ -106,7 +92,6 @@
             <label><input type="checkbox" value="6" onchange="handleInputChange()"> Walk 1 mph on flat ground</label>
             <label><input type="checkbox" value="3.5" onchange="handleInputChange()"> Sleeping and staying alive</label>
         </div>
-        <!-- <br><br>
         <label>Hobbies Activities:</label>
         <div class="checkbox-group">
             <label><input type="checkbox" value="15-20" onchange="handleInputChange()"> Carrying 2 shopping bags (approx. 4 kg / 18 lbs in each hand)</label>
@@ -118,9 +103,7 @@
             <label><input type="checkbox" value="20-25" onchange="handleInputChange()"> Camping - putting up a tent</label>
             <label><input type="checkbox" value="20-25" onchange="handleInputChange()"> Carrying luggage through airport (10 kg / 22 lbs) and putting it in overhead locker</label>
             <label><input type="checkbox" value="20-25" onchange="handleInputChange()"> Carrying a toddler (age 2, approx. 12-15 kg / 26-33 lbs)</label>
-        </div> -->
-
-        <!-- <button onclick="calculateResults()">Calculate</button> -->
+        </div>
 
         <div class="output">
             <p id="currentRanking"></p>
@@ -133,39 +116,6 @@
     <script>
         function updateValue(id, value) {
             document.getElementById(id).textContent = value;
-        }
-
-        // function getDeclineRate(age, sex, activityLevel) {
-        //     if (age >= 91) return 3 / 100;
-        //     if (age >= 81) return 2.5 / 100;
-        //     if (age >= 71) return 2 / 100;
-            
-        //     const declineRates = {
-        //         male: { sedentary: 0.40, active: 0.39, trained: 0.46 },
-        //         female: { sedentary: 0.35, active: 0.44, trained: 0.62 }
-        //     };
-        //     return declineRates[sex][activityLevel];
-        // }
-        function getDeclineRate(age, sex, activityLevel) {
-            const declineRates = {
-                male: { sedentary: 0.40, active: 0.39, trained: 0.46 },
-                female: { sedentary: 0.35, active: 0.44, trained: 0.62 }
-            };
-
-            if (age >= 91) {
-                return  declineRates[sex][activityLevel] + (3 / 100);
-            } else if (age >= 81) {
-                return declineRates[sex][activityLevel] + (2.5 / 100);
-            } else if (age >= 71) {
-                return declineRates[sex][activityLevel] + (2 / 100);
-            } else if (age >= 61 && age <= 70) {
-                return declineRates[sex][activityLevel] + (1.5 / 100);
-            } else if (age >= 51 && age <= 60) {
-                return declineRates[sex][activityLevel] + (1 / 100);
-            } else {
-                return declineRates[sex][activityLevel];
-            }
-
         }
 
         function handleInputChange() {
@@ -189,54 +139,73 @@
                 const category = getFeelingCategory(percentage);
                 dailyImpact += `<b>${activity.parentNode.textContent.trim()}:</b> ${percentage.toFixed(1)}% of VO2 Max (${category})<br>`;
             });
-            function getRanking(sex, age, vo2max) {
-                const vo2MaxNorms = {
-                    male: [
-                        { ageRange: [18, 25], ranges: [60, 52, 47, 42, 37, 30] },
-                        { ageRange: [26, 35], ranges: [56, 49, 43, 40, 35, 30] },
-                        { ageRange: [36, 45], ranges: [51, 43, 39, 35, 31, 26] },
-                        { ageRange: [46, 55], ranges: [45, 39, 36, 32, 29, 25] },
-                        { ageRange: [56, 65], ranges: [41, 36, 32, 30, 26, 22] },
-                        { ageRange: [65, 100], ranges: [37, 33, 29, 26, 22, 20] }
-                    ],
-                    female: [
-                        { ageRange: [18, 25], ranges: [56, 47, 42, 38, 33, 28] },
-                        { ageRange: [26, 35], ranges: [52, 45, 39, 35, 31, 26] },
-                        { ageRange: [36, 45], ranges: [45, 38, 34, 31, 27, 22] },
-                        { ageRange: [46, 55], ranges: [40, 34, 31, 28, 25, 20] },
-                        { ageRange: [56, 65], ranges: [37, 32, 28, 25, 22, 18] },
-                        { ageRange: [65, 100], ranges: [32, 28, 25, 22, 19, 17] }
-                    ]
-                };
-            
-                const ratings = ["Exceptional", "Excellent", "Good", "Above Average", "Below Average", "Poor", "Very Poor"];
-            
-                // 1. Find the correct age group
-                const norms = vo2MaxNorms[sex];
-                const ageGroup = norms.find(group => age >= group.ageRange[0] && age <= group.ageRange[1]);
-            
-                if (!ageGroup) return "Invalid Age";
-            
-                // 2. Compare VO2 Max value with thresholds for the selected age group
-                for (let i = 0; i < ageGroup.ranges.length; i++) {
-                    if (vo2max >= ageGroup.ranges[i]) {
-                        return ratings[i];
-                    }
-                }
-            
-                return ratings[ratings.length - 1]; // Return "Very Poor" if no range matches
-            }
-
 
             const currentRank = getRanking(sex, age, vo2max);
-            const projectedRank = getRanking(sex, age + years, projectedVO2Max);
+            const projectedRank = getRanking(sex, years, projectedVO2Max);
 
-            document.getElementById("projectedVO2").innerHTML = `Projected VO2 Max after ${years} years: <span class="highlight">${projectedVO2Max.toFixed(2)}</span>`;
+            document.getElementById("projectedVO2").innerHTML = `Projected VO2 Max at age ${years}: <span class="highlight">${projectedVO2Max.toFixed(2)}</span>`;
             document.getElementById("dailyImpact").innerHTML = dailyImpact || "No activities selected.";
-            
+
             document.getElementById("currentRanking").innerHTML = `Current Ranking: <span class="highlight">${currentRank}</span>`;
             document.getElementById("projectedRanking").innerHTML = `Projected Ranking: <span class="highlight">${projectedRank}</span>`;
-            // document.getElementById("dailyImpact").innerHTML = "Impact on Daily Activities: Calculations coming soon!";
+        }
+
+        function getDeclineRate(age, sex, activityLevel) {
+            const declineRates = {
+                male: { sedentary: 0.40, active: 0.39, trained: 0.46 },
+                female: { sedentary: 0.35, active: 0.44, trained: 0.62 }
+            };
+
+            if (age >= 91) {
+                return  declineRates[sex][activityLevel] + (3 / 100);
+            } else if (age >= 81) {
+                return declineRates[sex][activityLevel] + (2.5 / 100);
+            } else if (age >= 71) {
+                return declineRates[sex][activityLevel] + (2 / 100);
+            } else if (age >= 61 && age <= 70) {
+                return declineRates[sex][activityLevel] + (1.5 / 100);
+            } else if (age >= 51 && age <= 60) {
+                return declineRates[sex][activityLevel] + (1 / 100);
+            } else {
+                return declineRates[sex][activityLevel];
+            }
+
+        }
+
+        function getRanking(sex, age, vo2max) {
+            const vo2MaxNorms = {
+                male: [
+                    { ageRange: [18, 25], ranges: [60, 52, 47, 42, 37, 30] },
+                    { ageRange: [26, 35], ranges: [56, 49, 43, 40, 35, 30] },
+                    { ageRange: [36, 45], ranges: [51, 43, 39, 35, 31, 26] },
+                    { ageRange: [46, 55], ranges: [45, 39, 36, 32, 29, 25] },
+                    { ageRange: [56, 65], ranges: [41, 36, 32, 30, 26, 22] },
+                    { ageRange: [65, 100], ranges: [37, 33, 29, 26, 22, 20] }
+                ],
+                female: [
+                    { ageRange: [18, 25], ranges: [56, 47, 42, 38, 33, 28] },
+                    { ageRange: [26, 35], ranges: [52, 45, 39, 35, 31, 26] },
+                    { ageRange: [36, 45], ranges: [45, 38, 34, 31, 27, 22] },
+                    { ageRange: [46, 55], ranges: [40, 34, 31, 28, 25, 20] },
+                    { ageRange: [56, 65], ranges: [37, 32, 28, 25, 22, 18] },
+                    { ageRange: [65, 100], ranges: [32, 28, 25, 22, 19, 17] }
+                ]
+            };
+
+            const ratings = ["Exceptional", "Excellent", "Good", "Above Average", "Below Average", "Poor", "Very Poor"];
+
+            const norms = vo2MaxNorms[sex];
+            const ageGroup = norms.find(group => age >= group.ageRange[0] && age <= group.ageRange[1]);
+
+            if (!ageGroup) return "Invalid Age";
+
+            for (let i = 0; i < ageGroup.ranges.length; i++) {
+                if (vo2max >= ageGroup.ranges[i]) {
+                    return ratings[i];
+                }
+            }
+
+            return ratings[ratings.length - 1];
         }
 
         function getFeelingCategory(percentage) {

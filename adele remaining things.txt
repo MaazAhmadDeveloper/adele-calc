@@ -1,0 +1,11 @@
+1- Years to Project: slider extend
+2- user not need to calc project age itself
+3- Years to Project: will start after current age
+4- change the tile from Years to Project: to "future age to prredict" 
+5- to get the value of decline rate select the purple one
+6- from 51-60 the decline rate will 1%
+ . from 61-70 the decline rate will 1.5%
+ . from 20-50 the decline rate will acording purple (remain same values)
+7- add remaining checkbox (Hobbies Activities) in a small table
+8- change the heading of (Activity Level:) to "Training Status"
+9- inside the dropdown Sedentry, Active, Trained text will change to "Untrained, Moderately Tranied, Well trained"

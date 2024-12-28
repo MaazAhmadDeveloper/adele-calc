@@ -72,55 +72,42 @@
     <div class="container">
         <h1>Longevity Fitness Calculator</h1>
         <label>Current Age:</label>
-        <input type="range" id="age" min="20" max="100" value="30" oninput="handleInputChange()">
+        <input type="range" id="age" min="20" max="100" value="30" oninput="updateValue('ageValue', this.value)">
         <span id="ageValue" class="highlight">30</span>
 
         <label>Sex:</label>
-        <select id="sex" onchange="handleInputChange()">
+        <select id="sex">
             <option value="male">Male</option>
             <option value="female">Female</option>
         </select>
 
         <label>Current VO2 Max Score:</label>
-        <input type="number" id="vo2max" min="0" max="60" step="0.1" value="40" oninput="handleInputChange()">
+        <input type="number" id="vo2max" min="0" max="60" step="0.1" value="40">
 
-        <label>Training Status:</label>
-        <select id="activityLevel" onchange="handleInputChange()">
-            <option value="sedentary">Untrained</option>
-            <option value="active">Moderately Trained</option>
-            <option value="trained">Well Trained</option>
+        <label>Activity Level:</label>
+        <select id="activityLevel">
+            <option value="sedentary">Sedentary</option>
+            <option value="active">Active</option>
+            <option value="trained">Trained</option>
         </select>
 
-        <label>Future Age to Predict:</label>
-        <input type="range" id="years" min="30" max="150" value="40" oninput="handleInputChange()">
-        <span id="yearsValue" class="highlight">40</span>
+        <label>Years to Project:</label>
+        <input type="range" id="years" min="1" max="50" value="10" oninput="updateValue('yearsValue', this.value)">
+        <span id="yearsValue" class="highlight">10</span>
 
         <label>Daily Activities:</label>
         <div class="checkbox-group">
-            <label><input type="checkbox" value="42" onchange="handleInputChange()"> Carrying heavy objects upstairs</label>
-            <label><input type="checkbox" value="35" onchange="handleInputChange()"> Jog on flat ground</label>
-            <label><input type="checkbox" value="32" onchange="handleInputChange()"> Briskly climb stairs</label>
-            <label><input type="checkbox" value="25" onchange="handleInputChange()"> Walk up steep hill (10% incline)</label>
-            <label><input type="checkbox" value="18" onchange="handleInputChange()"> Walk up steep hill (5% incline)</label>
-            <label><input type="checkbox" value="11" onchange="handleInputChange()"> Walking 3 mph on flat ground</label>
-            <label><input type="checkbox" value="6" onchange="handleInputChange()"> Walk 1 mph on flat ground</label>
-            <label><input type="checkbox" value="3.5" onchange="handleInputChange()"> Sleeping and staying alive</label>
+            <label><input type="checkbox" value="42"> Carrying heavy objects upstairs</label>
+            <label><input type="checkbox" value="35"> Jog on flat ground</label>
+            <label><input type="checkbox" value="32"> Briskly climb stairs</label>
+            <label><input type="checkbox" value="25"> Walk up steep hill (10% incline)</label>
+            <label><input type="checkbox" value="18"> Walk up steep hill (5% incline)</label>
+            <label><input type="checkbox" value="11"> Walking 3 mph on flat ground</label>
+            <label><input type="checkbox" value="6"> Walk 1 mph on flat ground</label>
+            <label><input type="checkbox" value="3.5"> Sleeping and staying alive</label>
         </div>
-        <!-- <br><br>
-        <label>Hobbies Activities:</label>
-        <div class="checkbox-group">
-            <label><input type="checkbox" value="15-20" onchange="handleInputChange()"> Carrying 2 shopping bags (approx. 4 kg / 18 lbs in each hand)</label>
-            <label><input type="checkbox" value="20-25" onchange="handleInputChange()"> Mowing the lawn</label>
-            <label><input type="checkbox" value="25-30" onchange="handleInputChange()"> Gardening - digging</label>
-            <label><input type="checkbox" value="15-20" onchange="handleInputChange()"> Gardening - sweeping</label>
-            <label><input type="checkbox" value="20-25" onchange="handleInputChange()"> Gardening - leaf clearing</label>
-            <label><input type="checkbox" value="15-20" onchange="handleInputChange()"> Gardening - potting/weeding</label>
-            <label><input type="checkbox" value="20-25" onchange="handleInputChange()"> Camping - putting up a tent</label>
-            <label><input type="checkbox" value="20-25" onchange="handleInputChange()"> Carrying luggage through airport (10 kg / 22 lbs) and putting it in overhead locker</label>
-            <label><input type="checkbox" value="20-25" onchange="handleInputChange()"> Carrying a toddler (age 2, approx. 12-15 kg / 26-33 lbs)</label>
-        </div> -->
 
-        <!-- <button onclick="calculateResults()">Calculate</button> -->
+        <button onclick="calculateResults()">Calculate</button>
 
         <div class="output">
             <p id="currentRanking"></p>
@@ -135,52 +122,27 @@
             document.getElementById(id).textContent = value;
         }
 
-        // function getDeclineRate(age, sex, activityLevel) {
-        //     if (age >= 91) return 3 / 100;
-        //     if (age >= 81) return 2.5 / 100;
-        //     if (age >= 71) return 2 / 100;
-            
-        //     const declineRates = {
-        //         male: { sedentary: 0.40, active: 0.39, trained: 0.46 },
-        //         female: { sedentary: 0.35, active: 0.44, trained: 0.62 }
-        //     };
-        //     return declineRates[sex][activityLevel];
-        // }
         function getDeclineRate(age, sex, activityLevel) {
+            if (age >= 91) return 3 / 100;
+            if (age >= 81) return 2.5 / 100;
+            if (age >= 71) return 2 / 100;
+            
             const declineRates = {
                 male: { sedentary: 0.40, active: 0.39, trained: 0.46 },
                 female: { sedentary: 0.35, active: 0.44, trained: 0.62 }
             };
-
-            if (age >= 91) {
-                return  declineRates[sex][activityLevel] + (3 / 100);
-            } else if (age >= 81) {
-                return declineRates[sex][activityLevel] + (2.5 / 100);
-            } else if (age >= 71) {
-                return declineRates[sex][activityLevel] + (2 / 100);
-            } else if (age >= 61 && age <= 70) {
-                return declineRates[sex][activityLevel] + (1.5 / 100);
-            } else if (age >= 51 && age <= 60) {
-                return declineRates[sex][activityLevel] + (1 / 100);
-            } else {
-                return declineRates[sex][activityLevel];
-            }
-
+            return declineRates[sex][activityLevel];
         }
 
-        function handleInputChange() {
+        function calculateResults() {
             const age = parseInt(document.getElementById("age").value);
             const sex = document.getElementById("sex").value;
             const vo2max = parseFloat(document.getElementById("vo2max").value);
             const years = parseInt(document.getElementById("years").value);
             const activityLevel = document.getElementById("activityLevel").value;
 
-            document.getElementById("years").min = age;
-            updateValue("ageValue", age);
-            updateValue("yearsValue", years);
-
             const declineRate = getDeclineRate(age, sex, activityLevel);
-            const projectedVO2Max = age >= 71 ? vo2max * Math.pow(1 - declineRate, years - age) : vo2max - (declineRate * (years - age));
+            const projectedVO2Max = age >= 71 ? vo2max * Math.pow(1 - declineRate, years) : vo2max - (declineRate * years);
 
             let dailyImpact = "";
             document.querySelectorAll('input[type="checkbox"]:checked').forEach(activity => {
