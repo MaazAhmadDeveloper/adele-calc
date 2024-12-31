@@ -9,3 +9,11 @@
 7- add remaining checkbox (Hobbies Activities) in a small table
 8- change the heading of (Activity Level:) to "Training Status"
 9- inside the dropdown Sedentry, Active, Trained text will change to "Untrained, Moderately Tranied, Well trained"
+
+
+
+1- get the upper value in Hobbies Activities chart 
+2- invalid age error (fix that one)
+3- if the percentage exeed to 100% (it is inpossible) "Not Achievable"
+4- change the text of "Current Ranking" & "Projected Ranking" to Green Docs
+5- user need to check only one activity (not multiple)

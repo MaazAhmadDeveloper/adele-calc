@@ -82,7 +82,7 @@
         </select>
 
         <label>Current VO2 Max Score:</label>
-        <input type="number" id="vo2max" min="0" max="60" step="0.1" value="40" oninput="handleInputChange()">
+        <input type="number" id="vo2max" min="0" max="60" step="0.1" value="30" oninput="handleInputChange()">
 
         <label>Training Status:</label>
         <select id="activityLevel" onchange="handleInputChange()">
@@ -92,33 +92,33 @@
         </select>
 
         <label>Future Age to Predict:</label>
-        <input type="range" id="years" min="30" max="150" value="40" oninput="handleInputChange()">
+        <input type="range" id="years" min="30" max="105" value="40" oninput="handleInputChange()">
         <span id="yearsValue" class="highlight">40</span>
 
         <label>Daily Activities:</label>
         <div class="checkbox-group">
-            <label><input type="checkbox" value="42" onchange="handleInputChange()"> Carrying heavy objects upstairs</label>
-            <label><input type="checkbox" value="35" onchange="handleInputChange()"> Jog on flat ground</label>
-            <label><input type="checkbox" value="32" onchange="handleInputChange()"> Briskly climb stairs</label>
-            <label><input type="checkbox" value="25" onchange="handleInputChange()"> Walk up steep hill (10% incline)</label>
-            <label><input type="checkbox" value="18" onchange="handleInputChange()"> Walk up steep hill (5% incline)</label>
-            <label><input type="checkbox" value="11" onchange="handleInputChange()"> Walking 3 mph on flat ground</label>
-            <label><input type="checkbox" value="6" onchange="handleInputChange()"> Walk 1 mph on flat ground</label>
-            <label><input type="checkbox" value="3.5" onchange="handleInputChange()"> Sleeping and staying alive</label>
+            <label><input type="checkbox" value="42" class="activity" onchange="handleCheckboxSelection('activity', this)"> Carrying heavy objects upstairs</label>
+            <label><input type="checkbox" value="35" class="activity" onchange="handleCheckboxSelection('activity', this)"> Jog on flat ground</label>
+            <label><input type="checkbox" value="32" class="activity" onchange="handleCheckboxSelection('activity', this)"> Briskly climb stairs</label>
+            <label><input type="checkbox" value="25" class="activity" onchange="handleCheckboxSelection('activity', this)"> Walk up steep hill (10% incline)</label>
+            <label><input type="checkbox" value="18" class="activity" onchange="handleCheckboxSelection('activity', this)"> Walk up steep hill (5% incline)</label>
+            <label><input type="checkbox" value="11" class="activity" onchange="handleCheckboxSelection('activity', this)"> Walking 3 mph on flat ground</label>
+            <label><input type="checkbox" value="6" class="activity" onchange="handleCheckboxSelection('activity', this)"> Walk 1 mph on flat ground</label>
+            <label><input type="checkbox" value="3.5" class="activity" onchange="handleCheckboxSelection('activity', this)"> Sleeping and staying alive</label>
         </div>
-        <!-- <br><br>
+        <br><br>
         <label>Hobbies Activities:</label>
         <div class="checkbox-group">
-            <label><input type="checkbox" value="15-20" onchange="handleInputChange()"> Carrying 2 shopping bags (approx. 4 kg / 18 lbs in each hand)</label>
-            <label><input type="checkbox" value="20-25" onchange="handleInputChange()"> Mowing the lawn</label>
-            <label><input type="checkbox" value="25-30" onchange="handleInputChange()"> Gardening - digging</label>
-            <label><input type="checkbox" value="15-20" onchange="handleInputChange()"> Gardening - sweeping</label>
-            <label><input type="checkbox" value="20-25" onchange="handleInputChange()"> Gardening - leaf clearing</label>
-            <label><input type="checkbox" value="15-20" onchange="handleInputChange()"> Gardening - potting/weeding</label>
-            <label><input type="checkbox" value="20-25" onchange="handleInputChange()"> Camping - putting up a tent</label>
-            <label><input type="checkbox" value="20-25" onchange="handleInputChange()"> Carrying luggage through airport (10 kg / 22 lbs) and putting it in overhead locker</label>
-            <label><input type="checkbox" value="20-25" onchange="handleInputChange()"> Carrying a toddler (age 2, approx. 12-15 kg / 26-33 lbs)</label>
-        </div> -->
+            <label><input type="checkbox" value="20" class="activity" onchange="handleCheckboxSelection('activity', this)"> Carrying 2 shopping bags (approx. 4 kg / 18 lbs in each hand)</label>
+            <label><input type="checkbox" value="25" class="activity" onchange="handleCheckboxSelection('activity', this)"> Mowing the lawn</label>
+            <label><input type="checkbox" value="30" class="activity" onchange="handleCheckboxSelection('activity', this)"> Gardening - digging</label>
+            <label><input type="checkbox" value="20" class="activity" onchange="handleCheckboxSelection('activity', this)"> Gardening - sweeping</label>
+            <label><input type="checkbox" value="25" class="activity" onchange="handleCheckboxSelection('activity', this)"> Gardening - leaf clearing</label>
+            <label><input type="checkbox" value="20" class="activity" onchange="handleCheckboxSelection('activity', this)"> Gardening - potting/weeding</label>
+            <label><input type="checkbox" value="25" class="activity" onchange="handleCheckboxSelection('activity', this)"> Camping - putting up a tent</label>
+            <label><input type="checkbox" value="25" class="activity" onchange="handleCheckboxSelection('activity', this)"> Carrying luggage through airport (10 kg / 22 lbs) and putting it in overhead locker</label>
+            <label><input type="checkbox" value="25" class="activity" onchange="handleCheckboxSelection('activity', this)"> Carrying a toddler (age 2, approx. 12-15 kg / 26-33 lbs)</label>
+        </div>
 
         <!-- <button onclick="calculateResults()">Calculate</button> -->
 
@@ -167,9 +167,19 @@
             }
 
         }
+        function handleCheckboxSelection(checkboxGroup, clickedCheckbox) {
+            const checkboxes = document.querySelectorAll(`.${checkboxGroup}`);
+            checkboxes.forEach(checkbox => {
+                if (checkbox !== clickedCheckbox) {
+                    checkbox.checked = false;
+                }
+            });
+            handleInputChange();
+        }
 
         function handleInputChange() {
             const age = parseInt(document.getElementById("age").value);
+            console.log(age);
             const sex = document.getElementById("sex").value;
             const vo2max = parseFloat(document.getElementById("vo2max").value);
             const years = parseInt(document.getElementById("years").value);
@@ -187,7 +197,12 @@
                 const activityVO2 = parseFloat(activity.value);
                 const percentage = (activityVO2 / projectedVO2Max) * 100;
                 const category = getFeelingCategory(percentage);
+                if (percentage >= 100) {
+                    dailyImpact += `<b>Not Achievable:</b> (${category})<br>`;
+                    
+                }else{
                 dailyImpact += `<b>${activity.parentNode.textContent.trim()}:</b> ${percentage.toFixed(1)}% of VO2 Max (${category})<br>`;
+                }
             });
             function getRanking(sex, age, vo2max) {
                 const vo2MaxNorms = {
@@ -209,11 +224,11 @@
                     ]
                 };
             
-                const ratings = ["Exceptional", "Excellent", "Good", "Above Average", "Below Average", "Poor", "Very Poor"];
+                const ratings = ["Exceptional", "Superior", "Excellent", "Good", "Fair", "Poor", "Very Poor"];
             
                 // 1. Find the correct age group
                 const norms = vo2MaxNorms[sex];
-                const ageGroup = norms.find(group => age >= group.ageRange[0] && age <= group.ageRange[1]);
+                const ageGroup = norms.find(group => age >= group.ageRange[0] && age <= group.ageRange[1]+age);
             
                 if (!ageGroup) return "Invalid Age";
             
