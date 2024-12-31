@@ -70,7 +70,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Longevity Fitness Calculators</h1>
+        <h1>Longevity Fitness Calculator</h1>
         <label>Current Age:</label>
         <input type="range" id="age" min="20" max="100" value="30" oninput="handleInputChange()">
         <span id="ageValue" class="highlight">30</span>
@@ -198,10 +198,11 @@
                 const percentage = (activityVO2 / projectedVO2Max) * 100;
                 const category = getFeelingCategory(percentage);
                 if (percentage >= 100) {
-                    dailyImpact += `<b>Not Achievable:</b> (${category})<br>`;
+                    dailyImpact += `<b>${activity.parentNode.textContent.trim()}:</b>  Not Achievable <br>`;
                     
                 }else{
-                dailyImpact += `<b>${activity.parentNode.textContent.trim()}:</b> ${percentage.toFixed(1)}% of VO2 Max (${category})<br>`;
+                dailyImpact += `<b>${activity.parentNode.textContent.trim()}:</b> You Will Feel ${category}<br> <p>You Will Need ${percentage.toFixed(0)}% of the OXYGEN your body is able to use</p>  `;
+                // dailyImpact += `<b>${activity.parentNode.textContent.trim()}:</b> ${percentage.toFixed(1)}% of VO2 Max (${category})<br>`;
                 }
             });
             function getRanking(sex, age, vo2max) {
@@ -255,13 +256,13 @@
         }
 
         function getFeelingCategory(percentage) {
-            if (percentage < 30) return " So relaxed, floating on a cloud!";
-            if (percentage < 40) return "It’s a breeze.";
-            if (percentage < 50) return "Cruising Along";
-            if (percentage < 60) return "In the groove, still chatting";
-            if (percentage < 75) return "Feeling the burn, struggling to chat!";
-            if (percentage < 90) return "Panting like a steam engine, muscles are on fire.";
-            return "Heart & lungs begging for mercy.";
+            if (percentage < 30) return "Like a “Zen Master” =  So relaxed, floating on a cloud!";
+            if (percentage < 40) return "Like a “Blissful Breeze” = It’s a breeze.";
+            if (percentage < 50) return "Like it’s “Easy Peasy” = You’ll be cruising along!";
+            if (percentage < 60) return "It’s “Smooth Sailing” = You’ll be in the groove, still chatting";
+            if (percentage < 75) return "It’s “Getting Spicy” = Feeling the burn, struggling to chat!";
+            if (percentage < 90) return "“Almost Full Throttle” = Panting like a steam engine, muscles are on fire.";
+            return "“Pushed to Limit” = Heart & lungs begging for mercy.";
         }
     </script>
 </body>
