@@ -5,23 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Longevity Fitness Calculator</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-            color: #333;
+        .calc-main{
+            display: flex;
+            max-width: 1200px;
+            border-radius: 8px;
+            margin: 20px auto;
         }
         .container {
-            max-width: 700px;
-            margin: 20px auto;
-            background: #fff;
+            font-family: 'Arial', sans-serif;
+            background: #202020;
             padding: 20px;
-            border-radius: 8px;
+            color: white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
-            color: #5c67f2;
+            color: #f89585;
             text-align: center;
         }
         label {
@@ -39,13 +37,16 @@
         input[type="range"] {
             width: 100%;
         }
+        .input-range{
+            
+        }
         .checkbox-group {
             margin-top: 10px;
         }
         button {
             width: 100%;
             padding: 10px;
-            background: #5c67f2;
+            background: #f89585;
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -53,27 +54,96 @@
             cursor: pointer;
         }
         button:hover {
-            background: #4a54e1;
+            background: #f07c6a;
         }
         .output {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e9f7fa;
-            border: 1px solid #bce4e6;
-            border-radius: 4px;
+            padding: 20px;
+            background: linear-gradient(to bottom, #1d4350, #a43931); /* Subtle gradient background */
+            color: #fff;
+            font-family: Arial, sans-serif;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+        }
+
+        .output p {
+            margin: 10px 0;
+        }
+
+        .output #currentRanking,
+        .output #projectedRanking {
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 50px;
+        }
+
+        .output #projectedVO2 {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            border: 1px solid white;
+            padding: 20px 8px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .output #dailyImpact {
+            background: rgba(255, 255, 255, 0.2); 
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            margin-top: 50px;
+            max-width: 400px;
+        }
+
+        .output #dailyImpact b {
+        }
+
+        .output #dailyImpact p {
         }
         .highlight {
-            font-weight: bold;
-            color: #5c67f2;
+            font-size: 34px;
+            font-weight: 400;
+            color: white;
         }
+        .highlighted {
+            font-weight: bold;
+            color: #f89585;
+        }
+        select {
+            width: 300px;
+            background-color: #202020; /* Dropdown background */
+            color: white; /* Text color */
+        }
+        option:hover,
+        option:checked {
+            background-color: #f89585; /* Your desired hover/selected background color */
+            color: #ffffff; /* Text color for selected/hovered option */
+        }
+        input[type="checkbox"] {
+            appearance: none; 
+            border: 1px solid #f89585;
+            position: relative;
+            margin: 0px;
+        }
+        input[type="checkbox"]:checked {
+            background-color: #f89585; /* Background color for checked state */
+            border-color: #f07c6a; /* Border color for checked state */
+        }
+        input[type="checkbox"]:checked::after {
+            content: '✔';
+            color: white; 
+            position: absolute;
+            top: 2px;
+            left: 3px;
+        }
+
     </style>
 </head>
 <body>
+    <div class="calc-main">
     <div class="container">
         <h1>Longevity Fitness Calculator</h1>
         <label>Current Age:</label>
-        <input type="range" id="age" min="20" max="100" value="30" oninput="handleInputChange()">
-        <span id="ageValue" class="highlight">30</span>
+        <input type="range" class="input-range" id="age" min="20" max="100" value="30" oninput="handleInputChange()">
+        <span id="ageValue" class="highlighted">30</span>
 
         <label>Sex:</label>
         <select id="sex" onchange="handleInputChange()">
@@ -82,7 +152,7 @@
         </select>
 
         <label>Current VO2 Max Score:</label>
-        <input type="number" id="vo2max" min="0" max="60" step="0.1" value="30" oninput="handleInputChange()">
+        <input type="number" id="vo2max" min="0" max="60" step="0.1" value="50" oninput="handleInputChange()">
 
         <label>Training Status:</label>
         <select id="activityLevel" onchange="handleInputChange()">
@@ -92,8 +162,8 @@
         </select>
 
         <label>Future Age to Predict to:</label>
-        <input type="range" id="years" min="30" max="105" value="40" oninput="handleInputChange()">
-        <span id="yearsValue" class="highlight">40</span>
+        <input type="range" class="input-range" id="years" min="30" max="105" value="40" oninput="handleInputChange()">
+        <span id="yearsValue" class="highlighted">40</span>
 
         <label>Activities:</label>
         <div class="checkbox-group">
@@ -122,13 +192,14 @@
 
         <!-- <button onclick="calculateResults()">Calculate</button> -->
 
-        <div class="output">
-            <p id="currentRanking"></p>
-            <p id="projectedVO2"></p>
-            <p id="dailyImpact"></p>
-            <p id="projectedRanking"></p>
-        </div>
     </div>
+    <div class="output">
+        <p id="projectedVO2"></p>
+        <p id="currentRanking"></p>
+        <p id="projectedRanking"></p>
+        <p id="dailyImpact"></p>
+    </div>
+</div>
 
     <script>
         function updateValue(id, value) {
@@ -179,13 +250,12 @@
 
         function handleInputChange() {
             const age = parseInt(document.getElementById("age").value);
-            console.log(age);
             const sex = document.getElementById("sex").value;
             const vo2max = parseFloat(document.getElementById("vo2max").value);
             const years = parseInt(document.getElementById("years").value);
             const activityLevel = document.getElementById("activityLevel").value;
 
-            document.getElementById("years").min = age;
+            document.getElementById("years").min = age+2;
             updateValue("ageValue", age);
             updateValue("yearsValue", years);
 
@@ -201,7 +271,7 @@
                     dailyImpact += `<b>${activity.parentNode.textContent.trim()}:</b>  Not Achievable <br>`;
                     
                 }else{
-                dailyImpact += `<b>${activity.parentNode.textContent.trim()}:</b> You Will Feel ${category}<br> <p>You Will Need ${percentage.toFixed(0)}% of the OXYGEN your body is able to use</p>  `;
+                dailyImpact += `<b>${activity.parentNode.textContent.trim()}:</b>  <p>You Will Feel ${category}</p> <br> <p>You Will Need ${percentage.toFixed(0)}% of the OXYGEN your body is able to use</p>  `;
                 // dailyImpact += `<b>${activity.parentNode.textContent.trim()}:</b> ${percentage.toFixed(1)}% of VO2 Max (${category})<br>`;
                 }
             });
@@ -247,11 +317,11 @@
             const currentRank = getRanking(sex, age, vo2max);
             const projectedRank = getRanking(sex, age + years, projectedVO2Max);
 
-            document.getElementById("projectedVO2").innerHTML = `Projected VO2 Max after ${years} years: <span class="highlight">${projectedVO2Max.toFixed(2)}</span>`;
+            document.getElementById("projectedVO2").innerHTML = `Projected VO2 Max at ${years} years:<span class="highlighted"> ${projectedVO2Max.toFixed(2)}</span>`;
             document.getElementById("dailyImpact").innerHTML = dailyImpact || "No activities selected.";
             
-            document.getElementById("currentRanking").innerHTML = `Current Ranking: <span class="highlight">${currentRank}</span>`;
-            document.getElementById("projectedRanking").innerHTML = `Projected Ranking: <span class="highlight">${projectedRank}</span>`;
+            document.getElementById("currentRanking").innerHTML = `Current Ranking: <br> <span class="highlight">${currentRank}</span>`;
+            document.getElementById("projectedRanking").innerHTML = `Projected Ranking: <br> <span class="highlight">${projectedRank}</span>`;
             // document.getElementById("dailyImpact").innerHTML = "Impact on Daily Activities: Calculations coming soon!";
         }
 
@@ -264,6 +334,7 @@
             if (percentage < 90) return "“Almost Full Throttle” = Panting like a steam engine, muscles are on fire.";
             return "“Pushed to Limit” = Heart & lungs begging for mercy.";
         }
+        handleInputChange()
     </script>
 </body>
 </html>
