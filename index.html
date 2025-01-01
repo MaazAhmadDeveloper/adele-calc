@@ -58,7 +58,7 @@
         }
         .output {
             padding: 20px;
-            background: linear-gradient(to bottom, #1d4350, #a43931); /* Subtle gradient background */
+            background: linear-gradient(to bottom, #1d4350, #F89585); /* Subtle gradient background */
             color: #fff;
             font-family: Arial, sans-serif;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
@@ -66,6 +66,7 @@
 
         .output p {
             margin: 10px 0;
+            font-size: 20px;
         }
 
         .output #currentRanking,
@@ -94,6 +95,8 @@
         }
 
         .output #dailyImpact b {
+            color: #202020;
+            font-size: 26px;
         }
 
         .output #dailyImpact p {
@@ -194,9 +197,9 @@
 
     </div>
     <div class="output">
-        <p id="projectedVO2"></p>
         <p id="currentRanking"></p>
         <p id="projectedRanking"></p>
+        <p id="projectedVO2"></p>
         <p id="dailyImpact"></p>
     </div>
 </div>
@@ -317,7 +320,8 @@
             const currentRank = getRanking(sex, age, vo2max);
             const projectedRank = getRanking(sex, age + years, projectedVO2Max);
 
-            document.getElementById("projectedVO2").innerHTML = `Projected VO2 Max at ${years} years:<span class="highlighted"> ${projectedVO2Max.toFixed(2)}</span>`;
+            document.getElementById("projectedVO2").innerHTML = `Projected VO2 Max Score:<span class="highlighted"> ${projectedVO2Max.toFixed(2)}</span>`;
+            // document.getElementById("projectedVO2").innerHTML = `Projected VO2 Max Score ${years} years:<span class="highlighted"> ${projectedVO2Max.toFixed(2)}</span>`;
             document.getElementById("dailyImpact").innerHTML = dailyImpact || "No activities selected.";
             
             document.getElementById("currentRanking").innerHTML = `Current Ranking: <br> <span class="highlight">${currentRank}</span>`;
